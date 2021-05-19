@@ -1,0 +1,137 @@
+body{
+	background-image: url("https://cdn.pixabay.com/photo/2017/10/11/23/35/musical-background-2842924_1280.jpg");
+	opacity: 77%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	height: 100ch;
+}
+
+/*#particles-js{
+	background-image: url("https://cdn.pixabay.com/photo/2017/10/11/23/35/musical-background-2842924_1280.jpg");
+	/*background-size: cover;
+	height: 800px;
+	width: 1020px;
+	z-index: 1;
+}
+*/
+.main{
+	margin: 0 auto;
+	z-index: 0;
+}
+
+#header{
+	font-family: 'Yeon Sung', cursive;
+	text-align: center;
+	padding-top: 40px;
+	padding-bottom: 40px;
+	font-size: 500%;
+	opacity: 100%;
+	color: peachpuff;
+}
+
+.row1{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+.square{
+	width:8%;
+	/*background:purple;*/
+	padding: 3%;
+	float: left;
+	margin:1%;
+	border-radius: 10%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+
+}
+
+.square2{
+	width:8%;
+	/*background:purple;*/
+	padding: 3%;
+	float: left;
+	margin:1%;
+	border-radius: 10%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+#r2c1{background-color: gold ;font-family: 'Indie Flower', cursive;}
+#r2c2{background-color: pink;font-family: 'Indie Flower', cursive;}
+#r2c3{background-color: orange;font-family: 'Indie Flower', cursive;}
+#r2c4{background-color: teal;font-family: 'Indie Flower', cursive;}
+#r2c5{background-color: green;font-family: 'Indie Flower', cursive;}
+#r2c6{background-color: peru;font-family: 'Indie Flower', cursive;}
+#r2c7{background-color:maroon ;font-family: 'Indie Flower', cursive;}
+#r2c8{background-color: lightseagreen;font-family: 'Indie Flower', cursive;}
+#r2c9{background-color:lightyellow ;font-family: 'Indie Flower', cursive;}
+
+
+#r3c1{background-color:lightyellow ;font-family: 'Indie Flower', cursive;}
+#r3c2{background-color: peru;font-family: 'Indie Flower', cursive;}
+#r3c3{background-color: pink;font-family: 'Indie Flower', cursive;}
+#r3c4{background-color: #e83e8c;font-family: 'Indie Flower', cursive;}
+#r3c5{background-color:yellowgreen ;font-family: 'Indie Flower', cursive;}
+#r3c6{background-color:orange ;font-family: 'Indie Flower', cursive;}
+#r3c7{background-color: teal;font-family: 'Indie Flower', cursive;}
+
+
+
+#r1c1{
+	background-color: #e83e8c;
+	font-family: 'Indie Flower', cursive;
+}
+
+#r1c2{
+	background-color:yellowgreen;
+	font-family: 'Indie Flower', cursive;
+}
+
+#r1c3{
+	background-color:gold;
+	font-family: 'Indie Flower', cursive;
+}
+
+#r1c4{
+	background-color: purple;
+	font-family: 'Indie Flower', cursive;
+
+}
+
+#r1c5{
+	background-color: pink;
+	font-family: 'Indie Flower', cursive;
+}
+
+#r1c6{
+	background-color: red;
+	font-family: 'Indie Flower', cursive;
+}
+
+#r1c7{
+	background-color:orange;
+	font-family: 'Indie Flower', cursive;
+}
+
+#r1c8{
+	background-color: green;
+	font-family: 'Indie Flower', cursive;
+	
+}
+
+#r1c9{
+	background-color: teal;
+	font-family: 'Indie Flower', cursive;
+
+}
+
+#r1c10{
+	background-color: cyan;
+	font-family: 'Indie Flower', cursive;
+
+}
+
