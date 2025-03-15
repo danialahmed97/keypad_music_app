@@ -1,102 +1,434 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title >My Happy Place</title>
-	<link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Happy Place - Interactive Sound Visualizer</title>
+  <link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Yeon+Sung&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+    body {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+      font-family: 'Yeon Sung', cursive;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      color: white;
+    }
 
-	<link href="https://fonts.googleapis.com/css?family=Yeon+Sung&display=swap" rel="stylesheet">
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="style.css">
+    .main {
+      max-width: 100%;
+      padding: 15px;
+    }
+
+    header {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    #header {
+      font-family: 'Indie Flower', cursive;
+      font-size: 2.5rem;
+      color: white;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      margin-bottom: 1.5rem;
+    }
+
+    .row1 {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 5px 0;
+    }
+
+    .square, .square2 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      margin: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      font-weight: bold;
+      user-select: none;
+    }
+
+    .square {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #333;
+    }
+
+    .square2 {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(220, 220, 250, 0.9);
+      color: #444;
+    }
+
+    .square:active, .square2:active, 
+    .square.active, .square2.active {
+      transform: scale(0.95);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+    }
+
+    /* Responsive styles */
+    @media (min-width: 768px) {
+      .square, .square2 {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2em;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .square, .square2 {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9em;
+      }
+      #header {
+        font-size: 2rem;
+      }
+    }
+
+    /* Instructions */
+    .instructions {
+      text-align: center;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      max-width: 600px;
+    }
+
+    /* Visual effects for active keys */
+    @keyframes ripple {
+      0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6); }
+      100% { box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+    }
+
+    .ripple {
+      animation: ripple 0.7s ease-out;
+    }
+
+    /* Mode toggle */
+    .mode-toggle {
+      margin: 15px auto;
+      text-align: center;
+    }
+
+    .toggle-btn {
+      background: rgba(255, 255, 255, 0.3);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 0 5px;
+    }
+
+    .toggle-btn:hover, .toggle-btn.active {
+      background: rgba(255, 255, 255, 0.6);
+      color: #333;
+    }
+
+    /* Canvas for particles */
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
 </head>
-<body >
-<div >
-	<div class="container main">
+<body>
+  <div id="particles-js"></div>
+  <div class="container main">
+    <header>
+      <h3 id="header">My Happy Place</h3>
+      <div class="mode-toggle">
+        <button id="keyboard-mode" class="toggle-btn active">Keyboard</button>
+        <button id="touch-mode" class="toggle-btn">Touch</button>
+      </div>
+    </header>
 
-		<header>
-			<h3 id="header">My Happy Place</h3>
-		</header>
+    <!-- Instructions -->
+    <div class="instructions">
+      <p id="instruction-text">Press keys on your keyboard or tap the letters to play sounds!</p>
+    </div>
 
-		<!-- First Row -->
-		<div class="row row1">
-			<div id="r1c1" class="square Q">Q</div>
-			<div id="r1c2" class="square W">W</div>
-			<div id="r1c3" class="square E">E</div>
-			<div id="r1c4" class="square R">R</div>
-			<div id="r1c5" class="square T">T</div>
-			<div id="r1c6" class="square Y">Y</div>
-			<div id="r1c7" class="square U">U</div>
-			<div id="r1c8" class="square I">I</div>
-			<div id="r1c9" class="square O">O</div>
-			<div id="r1c10" class="square P">P</div>
-		</div>
+    <!-- First Row -->
+    <div class="row row1">
+      <div id="r1c1" class="square" data-key="Q">Q</div>
+      <div id="r1c2" class="square" data-key="W">W</div>
+      <div id="r1c3" class="square" data-key="E">E</div>
+      <div id="r1c4" class="square" data-key="R">R</div>
+      <div id="r1c5" class="square" data-key="T">T</div>
+      <div id="r1c6" class="square" data-key="Y">Y</div>
+      <div id="r1c7" class="square" data-key="U">U</div>
+      <div id="r1c8" class="square" data-key="I">I</div>
+      <div id="r1c9" class="square" data-key="O">O</div>
+      <div id="r1c10" class="square" data-key="P">P</div>
+    </div>
 
+    <!-- Second Row -->
+    <div class="row row1">
+      <div id="r2c1" class="square2" data-key="A">A</div>
+      <div id="r2c2" class="square2" data-key="S">S</div>
+      <div id="r2c3" class="square2" data-key="D">D</div>
+      <div id="r2c4" class="square2" data-key="F">F</div>
+      <div id="r2c5" class="square2" data-key="G">G</div>
+      <div id="r2c6" class="square2" data-key="H">H</div>
+      <div id="r2c7" class="square2" data-key="J">J</div>
+      <div id="r2c8" class="square2" data-key="K">K</div>
+      <div id="r2c9" class="square2" data-key="L">L</div>
+    </div>
 
-			<!-- Second Row -->
-		<div class="row row1">
-			<div id="r2c1" class="square2 A">A</div>
-			<div id="r2c2" class="square2 S">S</div>
-			<div id="r2c3" class="square2 D">D</div>
-			<div id="r2c4" class="square2 F">F</div>
-			<div id="r2c5" class="square2 G">G</div>
-			<div id="r2c6" class="square2 H">H</div>
-			<div id="r2c7" class="square2 J">J</div>
-			<div id="r2c8" class="square2 K">K</div>
-			<div id="r2c9" class="square2 L">L</div>
-		</div>
+    <!-- Third Row -->
+    <div class="row row1">
+      <div id="r3c1" class="square2" data-key="Z">Z</div>
+      <div id="r3c2" class="square2" data-key="X">X</div>
+      <div id="r3c3" class="square2" data-key="C">C</div>
+      <div id="r3c4" class="square2" data-key="V">V</div>
+      <div id="r3c5" class="square2" data-key="B">B</div>
+      <div id="r3c6" class="square2" data-key="N">N</div>
+      <div id="r3c7" class="square2" data-key="M">M</div>
+    </div>
 
+    <!-- Sounds -->
+    <div>
+      <audio class="sound" data-key="Q" src="./sounds/1.aac"></audio>
+      <audio class="sound" data-key="W" src="./sounds/2.aac"></audio>
+      <audio class="sound" data-key="E" src="./sounds/3.aac"></audio>
+      <audio class="sound" data-key="R" src="./sounds/4.aac"></audio>
+      <audio class="sound" data-key="T" src="./sounds/5.aac"></audio>
+      <audio class="sound" data-key="Y" src="./sounds/6.aac"></audio>
+      <audio class="sound" data-key="U" src="./sounds/7.aac"></audio>
+      <audio class="sound" data-key="I" src="./sounds/8.aac"></audio>
+      <audio class="sound" data-key="O" src="./sounds/9.aac"></audio>
+      <audio class="sound" data-key="P" src="./sounds/10.aac"></audio>
+      <audio class="sound" data-key="A" src="./sounds/11.aac"></audio>
+      <audio class="sound" data-key="S" src="./sounds/12.aac"></audio>
+      <audio class="sound" data-key="D" src="./sounds/13.aac"></audio>
+      <audio class="sound" data-key="F" src="./sounds/14.aac"></audio>
+      <audio class="sound" data-key="G" src="./sounds/15.aac"></audio>
+      <audio class="sound" data-key="H" src="./sounds/16.aac"></audio>
+      <audio class="sound" data-key="J" src="./sounds/17.aac"></audio>
+      <audio class="sound" data-key="K" src="./sounds/18.aac"></audio>
+      <audio class="sound" data-key="L" src="./sounds/19.aac"></audio>
+      <audio class="sound" data-key="Z" src="./sounds/20.aac"></audio>
+      <audio class="sound" data-key="X" src="./sounds/21.aac"></audio>
+      <audio class="sound" data-key="C" src="./sounds/22.aac"></audio>
+      <audio class="sound" data-key="V" src="./sounds/23.aac"></audio>
+      <audio class="sound" data-key="B" src="./sounds/24.aac"></audio>
+      <audio class="sound" data-key="N" src="./sounds/25.aac"></audio>
+      <audio class="sound" data-key="M" src="./sounds/26.aac"></audio>
+    </div>
+  </div>
 
-		<!-- Third Row -->
-		<div class="row row1">
-			<div id="r3c1" class="square2 Z">Z</div>
-			<div id="r3c2" class="square2 X">X</div>
-			<div id="r3c3" class="square2 C">C</div>
-			<div id="r3c4" class="square2 V">V</div>
-			<div id="r3c5" class="square2 B">B</div>
-			<div id="r3c6" class="square2 N">N</div>
-			<div id="r3c7" class="square2 M">M</div>
-			
-		</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Particle.js configuration
+      particlesJS("particles-js", {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "#ffffff"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000000"
+            }
+          },
+          "opacity": {
+            "value": 0.5,
+            "random": false,
+            "anim": {
+              "enable": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#ffffff",
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 1,
+            "direction": "none",
+            "random": true,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "grab"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          }
+        },
+        "retina_detect": true
+      });
 
-		<!-- Sounds -->
-		<div>
-		<audio class="sound" src="./sounds/1.aac"></audio>
-		<audio class="sound" src="./sounds/2.aac"></audio>
-		<audio class="sound" src="./sounds/3.aac"></audio>
-		<audio class="sound" src="./sounds/4.aac"></audio>
-		<audio class="sound" src="./sounds/5.aac"></audio>
-		<audio class="sound" src="./sounds/6.aac"></audio>
-		<audio class="sound" src="./sounds/7.aac"></audio>
-		<audio class="sound" src="./sounds/8.aac"></audio>
-		<audio class="sound" src="./sounds/9.aac"></audio>
-		<audio class="sound" src="./sounds/10.aac"></audio>
-		<audio class="sound" src="./sounds/11.aac"></audio>
-		<audio class="sound" src="./sounds/12.aac"></audio>
-		<audio class="sound" src="./sounds/13.aac"></audio>
-		<audio class="sound" src="./sounds/14.aac"></audio>
-		<audio class="sound" src="./sounds/15.aac"></audio>
-		<audio class="sound" src="./sounds/16.aac"></audio>
-		<audio class="sound" src="./sounds/17.aac"></audio>
-		<audio class="sound" src="./sounds/18.aac"></audio>
-		<audio class="sound" src="./sounds/19.aac"></audio>
-		<audio class="sound" src="./sounds/20.aac"></audio>
-		<audio class="sound" src="./sounds/21.aac"></audio>
-		<audio class="sound" src="./sounds/22.aac"></audio>
-		<audio class="sound" src="./sounds/23.aac"></audio>
-		<audio class="sound" src="./sounds/24.aac"></audio>
-		<audio class="sound" src="./sounds/25.aac"></audio>
-		<audio class="sound" src="./sounds/26.aac"></audio>
-		<audio class="sound" src="./sounds/27.aac"></audio>
-		</div>
+      const squares = document.querySelectorAll('.square, .square2');
+      const sounds = document.querySelectorAll('.sound');
+      const keyboardModeBtn = document.getElementById('keyboard-mode');
+      const touchModeBtn = document.getElementById('touch-mode');
+      const instructionText = document.getElementById('instruction-text');
+      
+      let isTouchMode = false;
+      let isKeyDown = {}; // Track which keys are pressed
 
+      // Mode toggle
+      keyboardModeBtn.addEventListener('click', function() {
+        isTouchMode = false;
+        this.classList.add('active');
+        touchModeBtn.classList.remove('active');
+        instructionText.textContent = 'Press keys on your keyboard or tap the letters to play sounds!';
+      });
 
-	</div>
-</div>	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/2.2.0/anime.js"></script>
+      touchModeBtn.addEventListener('click', function() {
+        isTouchMode = true;
+        this.classList.add('active');
+        keyboardModeBtn.classList.remove('active');
+        instructionText.textContent = 'Tap the letters to play sounds! You can tap multiple at once.';
+      });
 
-	<script type="text/javascript" src="script.js"></script>
+      // Function to play sound and animate
+      function playSound(key) {
+        key = key.toUpperCase();
+        const audio = document.querySelector(`audio[data-key="${key}"]`);
+        const square = document.querySelector(`.square[data-key="${key}"], .square2[data-key="${key}"]`);
+        
+        if (!audio || !square) return;
+        
+        // Reset audio to start if already playing
+        audio.currentTime = 0;
+        audio.play();
+        
+        // Add visual effects
+        square.classList.add('active', 'ripple');
+        
+        // Visual animation
+        anime({
+          targets: square,
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          scale: 0.95,
+          duration: 100,
+          complete: function() {
+            anime({
+              targets: square,
+              backgroundColor: square.classList.contains('square') ? 
+                'rgba(255, 255, 255, 0.9)' : 'rgba(220, 220, 250, 0.9)',
+              scale: 1,
+              duration: 300,
+              easing: 'easeOutExpo',
+              complete: function() {
+                square.classList.remove('active', 'ripple');
+              }
+            });
+          }
+        });
+      }
 
-	<script type="text/javascript" src="js/particles.min.js"></script>
-	<script type="text/javascript" src="js/app.js"></script>
+      // Keyboard events
+      document.addEventListener('keydown', function(e) {
+        if (isTouchMode) return;
+        
+        const key = e.key.toUpperCase();
+        
+        // Prevent repeated firing when holding a key
+        if (isKeyDown[key]) return;
+        isKeyDown[key] = true;
+        
+        playSound(key);
+      });
+
+      document.addEventListener('keyup', function(e) {
+        isKeyDown[e.key.toUpperCase()] = false;
+      });
+
+      // Touch/click events for squares
+      squares.forEach(square => {
+        // Mouse events
+        square.addEventListener('mousedown', function() {
+          const key = this.getAttribute('data-key');
+          playSound(key);
+        });
+
+        // Touch events
+        square.addEventListener('touchstart', function(e) {
+          e.preventDefault(); // Prevent zoom/scroll on mobile
+          const key = this.getAttribute('data-key');
+          playSound(key);
+        }, { passive: false });
+      });
+
+      // Handle multiple simultaneous touches
+      document.addEventListener('touchstart', function(e) {
+        if (!isTouchMode) return;
+        
+        // Process all touch points
+        for (let i = 0; i < e.touches.length; i++) {
+          const touch = e.touches[i];
+          const element = document.elementFromPoint(touch.clientX, touch.clientY);
+          
+          if (element && (element.classList.contains('square') || element.classList.contains('square2'))) {
+            const key = element.getAttribute('data-key');
+            playSound(key);
+          }
+        }
+      }, { passive: false });
+
+      // Detect mobile and set appropriate mode
+      function isMobileDevice() {
+        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+      }
+      
+      if (isMobileDevice()) {
+        touchModeBtn.click(); // Auto-switch to touch mode on mobile
+      }
+    });
+  </script>
 </body>
 </html>
